@@ -69,6 +69,7 @@ class TurtleMoverClass(object):
             rospy.loginfo('stop')
             if self.dist_x != 1:
                 self.scan_key = 1
+                self.run = True
                 return
             self.dist_x += 1
         else:
@@ -79,13 +80,14 @@ class TurtleMoverClass(object):
         # поворачиваемся до состония, параллельного стене
         # ещё не учёл растоние
         if (abs(self.r_ray - self.l_ray) <= 0.001
-                and abs(self.r_ray * math.cos(math.pi / 36) - self.dist_to_wall) <= 0.001):
+                and abs(self.r_ray * math.cos(math.pi / 36) - self.dist_to_wall) <= 0.001) and not self.run:
             # стоим-ждём
             self.velocity.linear.x = 0
             self.velocity.angular.z = 0
             self.ros_publisher()
             wait_key()
             self.scan_key = 0
+            self.run = False
             rospy.loginfo('turned')
             return
         else:
