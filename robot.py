@@ -24,13 +24,20 @@ class TurtleMoverClass(object):
         # ключ скана
         self.scan_key = 0
 
-        self.l_ray = self.r_ray = 0
-        self.dist_to_wall = 0
+        self.l_ray = self.r_ray = 2
+        self.l_ray1 = self.r_ray1 = 2
+        self.dist_to_wall = 2
 
         rospy.spin()
 
     def scan_cb(self, msg):
         # правый, левый и луч нормали
+        if msg.ranges[358] != float('inf'):
+            self.r_ray1 = msg.ranges[358]
+
+        if msg.ranges[2] != float('inf'):
+            self.l_ray1 = msg.ranges[2]
+            
         if msg.ranges[355] != float('inf'):
             self.r_ray = msg.ranges[355]
 
@@ -50,12 +57,12 @@ class TurtleMoverClass(object):
 
     def mover(self):
         # проверка отклонение и фикс направления
-        if self.r_ray == self.l_ray:
+        if self.r_ray == self.l_ray and self.r_ray1 == self.l_ray1:
             self.velocity.angular.z = 0
-        elif self.r_ray < self.l_ray:
-            self.velocity.angular.z = self.ang
-        elif self.r_ray > self.l_ray:
+        elif self.r_ray < self.l_ray or self.r_ray1 < self.l_ray1:
             self.velocity.angular.z = -self.ang
+        elif self.r_ray > self.l_ray or self.r_ray1 > self.l_ray1:
+            self.velocity.angular.z = self.ang
 
         # русские вперёд!    
         if self.dist_to_wall == float('inf'):
@@ -70,6 +77,8 @@ class TurtleMoverClass(object):
             if self.dist_x != 1:
                 self.scan_key = 1
                 self.velocity.angular.z = -0.03
+                # не уверен в этой строке
+                # self.r_ray = 2
                 return
             self.dist_x += 1
         else:
@@ -80,7 +89,8 @@ class TurtleMoverClass(object):
         # поворачиваемся до состония, параллельного стене
         # ещё не учёл растоние
         if (abs(self.r_ray - self.l_ray) <= 0.001
-                and abs(self.r_ray * math.cos(math.pi / 36) - self.dist_to_wall) <= 0.001):
+                and abs(self.r_ray * math.cos(math.pi / 36) - self.dist_to_wall) <= 0.001
+                and abs(self.r_ray1 * math.cos(math.pi / 90) - self.dist_to_wall) <= 0.001):
             # стоим-ждём
             self.velocity.linear.x = 0
             self.velocity.angular.z = 0
