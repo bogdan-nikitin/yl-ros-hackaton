@@ -31,9 +31,14 @@ class TurtleMoverClass(object):
 
     def scan_cb(self, msg):
         # правый, левый и луч нормали
-        self.r_ray = msg.ranges[355]
-        self.l_ray = msg.ranges[5]
-        self.dist_to_wall = msg.ranges[0]
+        if msg.ranges[355] != float('inf'):
+            self.r_ray = msg.ranges[355]
+
+        if msg.ranges[5] != float('inf'):
+            self.l_ray = msg.ranges[5] 
+
+        if msg.ranges[0] != float('inf'):
+            self.dist_to_wall = msg.ranges[0] 
         # вызываем движение
         if self.scan_key:
             self.turner()
@@ -59,7 +64,8 @@ class TurtleMoverClass(object):
             # стоим-ждём
             self.velocity.linear.x = 0
             self.velocity.angular.z = 0
-            press_to_start = input()
+            #self.ros_publisher()
+            #wait_key()
             rospy.loginfo('stop')
             if self.dist_x != 1:
                 self.scan_key = 1
@@ -77,7 +83,8 @@ class TurtleMoverClass(object):
             # стоим-ждём
             self.velocity.linear.x = 0
             self.velocity.angular.z = 0
-            press_to_start = input()
+            self.ros_publisher()
+            wait_key()
             self.scan_key = 0
             rospy.loginfo('turned')
             return
@@ -85,6 +92,7 @@ class TurtleMoverClass(object):
             self.velocity.angular.z = -self.ang
         self.ros_publisher()
 
-
+def wait_key():
+    return raw_input('Waiting for key: ')
 
 TurtleMoverClass()
