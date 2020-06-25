@@ -54,9 +54,10 @@ class TurtleMoverClass(object):
             # стоим-ждём
             self.velocity.linear.x = 0
             self.velocity.angular.z = 0
-            self.dist_x += 1
             press_to_start = input()
-            self.scan_key = 1 - self.scan_key
+            if self.dist_x != 1:
+                self.scan_key = 1 - self.scan_key
+            self.dist_x += 1
         else:
             self.velocity.linear.x = self.lin
         self.ros_publisher()
