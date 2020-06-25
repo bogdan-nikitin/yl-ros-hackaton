@@ -1,10 +1,12 @@
 #!/usr/bin/env python
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
+
+import math
 
 import rospy
-from sensor_msgs.msg import LaserScan
 from geometry_msgs.msg import Twist
-import math
+from sensor_msgs.msg import LaserScan
+
 
 class TurtleMoverClass(object):
 
@@ -21,7 +23,10 @@ class TurtleMoverClass(object):
         self.ang = 0.1
         # ключ скана
         self.scan_key = 0
-        
+
+        self.l_ray = self.r_ray = 0
+        self.dist_to_wall = 0
+
         rospy.spin()
 
     def scan_cb(self, msg):
@@ -68,7 +73,7 @@ class TurtleMoverClass(object):
         # поворачиваемся до состония, параллельного стене
         # ещё не учёл растоние
         if (self.r_ray == self.l_ray
-            and self.r_ray * math.cos(math.pi / 2) == self.dist_to_wall):
+                and self.r_ray * math.cos(math.pi / 2) == self.dist_to_wall):
             # стоим-ждём
             self.velocity.linear.x = 0
             self.velocity.angular.z = 0
@@ -79,5 +84,6 @@ class TurtleMoverClass(object):
         else:
             self.velocity.angular.z = -self.ang * 2
         self.ros_publisher()
+
 
 TurtleMoverClass()
