@@ -4,6 +4,9 @@ import rospy
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import LaserScan
 
+from .constants import *
+from .compare import *
+
 
 class MoverClass(object):
     def __init__(self):
@@ -11,10 +14,43 @@ class MoverClass(object):
         self.sub = rospy.Subscriber("/scan", LaserScan, self.scan_cb)
         self.pub = rospy.Publisher("/cmd_vel", Twist, queue_size=10)
         self.vel = Twist()
+
+        self.l_ray_front = self.r_ray_front = 0
+        self.dist_to_wall_front = 0
+
+        self.l_ray_left = self.r_ray_left = 0
+        self.dist_to_wall_left = 0
+
+        self.scan_data = []
+        self.rotate_90()
         rospy.spin()
+
+    def scan_cb(self, msg):
+        rospy.loginfo('%s', len(self.scan_data.ranges))
+        self.l_ray_front = msg.ranges[LIDAR_DEGREE - DEGREE_SHIFT]
+        self.r_ray_front = msg.ranges[DEGREE_FRONT + DEGREE_SHIFT]
+        self.dist_to_wall_front = msg.ranges[DEGREE_FRONT]
+
+        self.l_ray_left = msg.ranges[DEGREE_LEFT - DEGREE_SHIFT]
+        self.r_ray_left = msg.ranges[DEGREE_LEFT + DEGREE_SHIFT]
+        self.dist_to_wall_left = msg.ranges[DEGREE_LEFT]
+
+        self.scan_data = msg
 
     def ros_publisher(self):
         self.pub.publish(self.vel)
+
+    def rotate_90(self):
+        while True:
+            if compare_with_delta(self.l_ray_left, self.r_ray_left):
+                self.vel.angular = 0
+                rospy.loginfo('turned')
+                break
+            elif self.l_ray_left > self.r_ray_left:
+                self.vel.angular = -1
+            elif self.r_ray_left > self.l_ray_left:
+                self.vel.angular = 1
+            self.pub.publish(self.vel)
 
 
 MoverClass()
