@@ -18,12 +18,14 @@ class TurtleMoverClass(object):
         print(msg.ranges[0])
         self.r_ray = msg.ranges[10]
         self.l_ray = msg.ranges[350]
+        self.dist_to_wall = msg.ranges[0]
         self.mover()
 
     def scan_side(self, msg):
         print(msg.ranges[0])
         self.r_ray = msg.ranges[280]
         self.l_ray = msg.ranges[260]
+        self.dist_to_wall = msg.ranges[270]
         self.turner()
 
     def ros_publisher(self):
