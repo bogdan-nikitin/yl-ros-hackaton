@@ -75,7 +75,7 @@ class TurtleMoverClass(object):
             self.scan_key = 0
             return
         else:
-            self.velocity.angular.z = -self.ang
+            self.velocity.angular.z = -self.ang * 2
         self.ros_publisher()
 
 TurtleMoverClass()
