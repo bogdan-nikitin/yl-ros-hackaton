@@ -55,6 +55,7 @@ class TurtleMoverClass(object):
             self.velocity.linear.x = 0
             self.velocity.angular.z = 0
             press_to_start = input()
+            rospy.loginfo('stop')
             if self.dist_x != 1:
                 self.scan_key = 1
                 return
@@ -73,6 +74,7 @@ class TurtleMoverClass(object):
             self.velocity.angular.z = 0
             press_to_start = input()
             self.scan_key = 0
+            rospy.loginfo('turned')
             return
         else:
             self.velocity.angular.z = -self.ang * 2
