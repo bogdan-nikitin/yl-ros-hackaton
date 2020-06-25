@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 
 import rospy
-from sensor_msgs.msg import LaserScan
 from geometry_msgs.msg import Twist
+from sensor_msgs.msg import LaserScan
+
 
 class MoverClass(object):
     def __init__(self):
@@ -11,8 +12,9 @@ class MoverClass(object):
         self.pub = rospy.Publisher("/cmd_vel", Twist, queue_size=10)
         self.vel = Twist()
         rospy.spin()
-    
+
     def ros_publisher(self):
         self.pub.publish(self.vel)
+
 
 MoverClass()
