@@ -31,8 +31,8 @@ class TurtleMoverClass(object):
 
     def scan_cb(self, msg):
         # правый, левый и луч нормали
-        self.r_ray = msg.ranges[(5, 45)[self.scan_key]]
-        self.l_ray = msg.ranges[(355, 135)[self.scan_key]]
+        self.r_ray = msg.ranges[(5, 85)[self.scan_key]]
+        self.l_ray = msg.ranges[(355, 95)[self.scan_key]]
         self.dist_to_wall = msg.ranges[(0, 90)[self.scan_key]]
         # вызываем движение
         if self.scan_key:
@@ -72,8 +72,8 @@ class TurtleMoverClass(object):
     def turner(self):
         # поворачиваемся до состония, параллельного стене
         # ещё не учёл растоние
-        if (self.r_ray == self.l_ray
-                and abs(self.r_ray * math.cos(math.pi / 4) - self.dist_to_wall) <= 0.0001):
+        if (abs(self.r_ray - self.l_ray) <= 0.0001
+                and abs(self.r_ray * math.cos(math.pi / 36) - self.dist_to_wall) <= 0.0001):
             # стоим-ждём
             self.velocity.linear.x = 0
             self.velocity.angular.z = 0
@@ -82,20 +82,9 @@ class TurtleMoverClass(object):
             rospy.loginfo('turned')
             return
         else:
-            self.velocity.angular.z = -self.ang * 2
-        self.ros_publisher()
-
-
-    def stabilize(self):
-        self.r_ray = msg.ranges[5]
-        self.l_ray = msg.ranges[355]
-        if self.r_ray == self.l_ray:
-            return
-        elif self.r_ray < self.l_ray:
-            self.velocity.angular.z = self.ang
-        elif self.r_ray > self.l_ray:
             self.velocity.angular.z = -self.ang
         self.ros_publisher()
+
 
 
 TurtleMoverClass()
