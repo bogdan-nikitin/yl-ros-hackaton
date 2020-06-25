@@ -77,8 +77,6 @@ class TurtleMoverClass(object):
             if self.dist_x != 1:
                 self.scan_key = 1
                 self.velocity.angular.z = -0.03
-                # не уверен в этой строке
-                # self.r_ray = 2
                 return
             self.dist_x += 1
         else:
@@ -88,9 +86,9 @@ class TurtleMoverClass(object):
     def turner(self):
         # поворачиваемся до состония, параллельного стене
         # ещё не учёл растоние
-        if (abs(self.r_ray - self.l_ray) <= 0.001
-                and abs(self.r_ray * math.cos(math.pi / 36) - self.dist_to_wall) <= 0.001
-                and abs(self.r_ray1 * math.cos(math.pi / 90) - self.dist_to_wall) <= 0.001):
+        if ((abs(self.r_ray - self.l_ray) <= 0.001 or abs(self.r_ray1 - self.l_ray1) <= 0.001)
+                and (abs(self.r_ray * math.cos(math.pi / 36) - self.dist_to_wall) <= 0.001
+                or abs(self.r_ray1 * math.cos(math.pi / 90) - self.dist_to_wall) <= 0.001)):
             # стоим-ждём
             self.velocity.linear.x = 0
             self.velocity.angular.z = 0
