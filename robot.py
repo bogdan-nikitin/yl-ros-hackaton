@@ -15,7 +15,7 @@ class TurtleMoverClass(object):
         self.velocity = Twist()
         # дистанции, которые надо держать при движении вперёд и ключ к ним
         self.dist_x = 0
-        self.distanses_x = [0.2, 0.4, 0.2, 0.2, 0.2, 0.2, 0.4]
+        self.distanses_x = [0.2, 0.4, 0.2, 0.2, 0.2, 0.2, 0.2]
         # скорости
         self.lin = 0.1
         self.ang = 0.1
@@ -73,9 +73,8 @@ class TurtleMoverClass(object):
             self.velocity.angular.z = 0
             press_to_start = input()
             self.scan_key = 0
-        elif self.r_ray < self.l_ray:
-            self.velocity.angular.z = self.ang
-        elif self.r_ray > self.l_ray:
+            return
+        else:
             self.velocity.angular.z = -self.ang
         self.ros_publisher()
 
