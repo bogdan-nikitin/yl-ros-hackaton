@@ -4,6 +4,7 @@
 import rospy
 from sensor_msgs.msg import LaserScan
 from geometry_msgs.msg import Twist
+import math
 
 class TurtleMoverClass(object):
 
@@ -54,8 +55,8 @@ class TurtleMoverClass(object):
             self.velocity.linear.x = 0
             self.velocity.angular.z = 0
             self.dist_x += 1
-            self.scan_key = 1 - self.scan_key
             press_to_start = input()
+            self.scan_key = 1 - self.scan_key
         else:
             self.velocity.linear.x = self.lin
         self.ros_publisher()
@@ -63,12 +64,13 @@ class TurtleMoverClass(object):
     def turner(self):
         # поворачиваемся до состония, параллельного стене
         # ещё не учёл растоние
-        if self.r_ray == self.l_ray and self.dist_to_wall <= 0.2 + 0.072:
+        if (self.r_ray == self.l_ray
+            and self.r_ray * math.cos(math.pi / 2) == self.dist_to_wall):
             # стоим-ждём
             self.velocity.linear.x = 0
             self.velocity.angular.z = 0
-            self.scan_key = 1 - self.scan_key
             press_to_start = input()
+            self.scan_key = 1 - self.scan_key
         elif self.r_ray < self.l_ray:
             self.velocity.angular.z = self.ang
         elif self.r_ray > self.l_ray:
