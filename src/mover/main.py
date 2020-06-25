@@ -22,6 +22,7 @@ class MoverClass(object):
         self.dist_to_wall_left = 0
 
         self.scan_data = []
+
         self.rotate_90()
         rospy.spin()
 
@@ -41,6 +42,8 @@ class MoverClass(object):
         self.pub.publish(self.vel)
 
     def rotate_90(self):
+        self.vel.angular.z = 1
+        self.ros_publisher()
         while True:
             if compare_with_delta(self.l_ray_left, self.r_ray_left):
                 self.vel.angular = 0
@@ -50,7 +53,7 @@ class MoverClass(object):
                 self.vel.angular = -1
             elif self.r_ray_left > self.l_ray_left:
                 self.vel.angular = 1
-            self.pub.publish(self.vel)
+            self.ros_publisher()
 
 
 MoverClass()
