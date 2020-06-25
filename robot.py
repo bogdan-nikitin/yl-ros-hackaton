@@ -31,9 +31,9 @@ class TurtleMoverClass(object):
 
     def scan_cb(self, msg):
         # правый, левый и луч нормали
-        self.r_ray = msg.ranges[(355, 85)[self.scan_key]]
-        self.l_ray = msg.ranges[(5, 95)[self.scan_key]]
-        self.dist_to_wall = msg.ranges[(0, 90)[self.scan_key]]
+        self.r_ray = msg.ranges[355]
+        self.l_ray = msg.ranges[5]
+        self.dist_to_wall = msg.ranges[0]
         # вызываем движение
         if self.scan_key:
             self.turner()
