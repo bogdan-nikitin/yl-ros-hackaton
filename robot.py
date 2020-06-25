@@ -13,7 +13,7 @@ class TurtleMoverClass(object):
         self.pub = rospy.Publisher("/cmd_vel", Twist, queue_size=10)
         self.velocity = Twist()
         rospy.spin()
-        # дистанции, которые надо держать прни движении вперёд и ключ к ним
+        # дистанции, которые надо держать при движении вперёд и ключ к ним
         self.dist_x = 0
         self.distanses_x = [20, 40, 20, 20, 20, 20, 40]
 
@@ -62,7 +62,10 @@ class TurtleMoverClass(object):
         # поворачиваемс до состония, параллельного стене
         # ещё не учёл растоние
         if self.r_ray == self.l_ray:
+            # меняем функцию скана на сабе, стоим-ждём
             self.velocity.angular.z = 0
+            self.sub = rospy.Subscriber("/scan", LaserScan, self.scan_front)
+            press_to_start = input()
         elif self.r_ray < self.l_ray:
             self.velocity.angular.z = 0.1
         elif self.r_ray > self.l_ray:
