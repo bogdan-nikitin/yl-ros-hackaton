@@ -19,8 +19,8 @@ class TurtleMoverClass(object):
         self.dist_x = 0
         self.distanses_x = [0.2, 0.4, 0.2, 0.2, 0.2, 0.2, 0.2]
         # скорости
-        self.lin = 0.1
-        self.ang = 0.1
+        self.lin = 0.06
+        self.ang = 0.06
         # ключ скана
         self.scan_key = 0
 
@@ -33,7 +33,7 @@ class TurtleMoverClass(object):
         # правый, левый и луч нормали
         self.r_ray = msg.ranges[(5, 45)[self.scan_key]]
         self.l_ray = msg.ranges[(355, 135)[self.scan_key]]
-        self.dist_to_wall = msg.ranges[(0, 270)[self.scan_key]]
+        self.dist_to_wall = msg.ranges[(0, 90)[self.scan_key]]
         # вызываем движение
         if self.scan_key:
             self.turner()
@@ -73,7 +73,7 @@ class TurtleMoverClass(object):
         # поворачиваемся до состония, параллельного стене
         # ещё не учёл растоние
         if (self.r_ray == self.l_ray
-                and self.r_ray * math.cos(math.pi / 2) == self.dist_to_wall):
+                and abs(self.r_ray * math.cos(math.pi / 4) - self.dist_to_wall) <= 0.0001):
             # стоим-ждём
             self.velocity.linear.x = 0
             self.velocity.angular.z = 0
@@ -83,6 +83,18 @@ class TurtleMoverClass(object):
             return
         else:
             self.velocity.angular.z = -self.ang * 2
+        self.ros_publisher()
+
+
+    def stabilize(self):
+        self.r_ray = msg.ranges[5]
+        self.l_ray = msg.ranges[355]
+        if self.r_ray == self.l_ray:
+            return
+        elif self.r_ray < self.l_ray:
+            self.velocity.angular.z = self.ang
+        elif self.r_ray > self.l_ray:
+            self.velocity.angular.z = -self.ang
         self.ros_publisher()
 
 
