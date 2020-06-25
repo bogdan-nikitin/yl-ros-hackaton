@@ -49,7 +49,7 @@ class TurtleMoverClass(object):
         # русские вперёд!    
         if self.dist_to_wall == float('inf'):
             pass
-        elif self.dist_to_wall < self.dintanses_x[self.dist_x] + 0.072:
+        elif self.dist_to_wall < self.distanses_x[self.dist_x] + 0.072:
             # стоим-ждём
             self.velocity.linear.x = 0
             self.velocity.angular.z = 0
@@ -63,7 +63,7 @@ class TurtleMoverClass(object):
     def turner(self):
         # поворачиваемся до состония, параллельного стене
         # ещё не учёл растоние
-        if self.r_ray == self.l_ray:
+        if self.r_ray == self.l_ray and self.dist_to_wall <= 0.2 + 0.072:
             # стоим-ждём
             self.velocity.linear.x = 0
             self.velocity.angular.z = 0
