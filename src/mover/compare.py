@@ -1,4 +1,6 @@
-from .constants import DELTA
+# -*- coding: utf-8 -*-
+
+from constants import DELTA
 
 
 def compare_with_delta(a, b):
