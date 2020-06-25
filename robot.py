@@ -17,7 +17,7 @@ class TurtleMoverClass(object):
         self.velocity = Twist()
         # дистанции, которые надо держать при движении вперёд и ключ к ним
         self.dist_x = 0
-        self.distances_x = [0.2, 0.4, 0.2, 0.2, 0.2, 0.2, 0.2]
+        self.distanses_x = [0.2, 0.4, 0.2, 0.2, 0.2, 0.2, 0.2]
         # скорости
         self.lin = 0.06
         self.ang = 0.06
@@ -27,8 +27,6 @@ class TurtleMoverClass(object):
         self.l_ray = self.r_ray = 0
         self.dist_to_wall = 0
 
-        self.run = False
-
         rospy.spin()
 
     def scan_cb(self, msg):
@@ -37,11 +35,11 @@ class TurtleMoverClass(object):
             self.r_ray = msg.ranges[355]
 
         if msg.ranges[5] != float('inf'):
-            self.l_ray = msg.ranges[5]
+            self.l_ray = msg.ranges[5] 
 
         if msg.ranges[0] != float('inf'):
-            self.dist_to_wall = msg.ranges[0]
-            # вызываем движение
+            self.dist_to_wall = msg.ranges[0] 
+        # вызываем движение
         if self.scan_key:
             self.turner()
         else:
@@ -62,16 +60,16 @@ class TurtleMoverClass(object):
         # русские вперёд!    
         if self.dist_to_wall == float('inf'):
             pass
-        elif self.dist_to_wall < self.distances_x[self.dist_x] + 0.072:
+        elif self.dist_to_wall < self.distanses_x[self.dist_x] + 0.072:
             # стоим-ждём
             self.velocity.linear.x = 0
             self.velocity.angular.z = 0
-            # self.ros_publisher()
-            # wait_key()
+            #self.ros_publisher()
+            #wait_key()
             rospy.loginfo('stop')
             if self.dist_x != 1:
                 self.scan_key = 1
-                self.run = True
+                self.velocity.angular.z = -0.03
                 return
             self.dist_x += 1
         else:
@@ -82,24 +80,20 @@ class TurtleMoverClass(object):
         # поворачиваемся до состония, параллельного стене
         # ещё не учёл растоние
         if (abs(self.r_ray - self.l_ray) <= 0.001
-            and abs(self.r_ray * math.cos(
-                    math.pi / 36) - self.dist_to_wall) <= 0.001) and not self.run:
+                and abs(self.r_ray * math.cos(math.pi / 36) - self.dist_to_wall) <= 0.001):
             # стоим-ждём
             self.velocity.linear.x = 0
             self.velocity.angular.z = 0
             self.ros_publisher()
             wait_key()
             self.scan_key = 0
-            self.run = False
             rospy.loginfo('turned')
             return
         else:
             self.velocity.angular.z = -self.ang
         self.ros_publisher()
 
-
 def wait_key():
     return raw_input('Waiting for key: ')
-
 
 TurtleMoverClass()
