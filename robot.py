@@ -31,8 +31,8 @@ class TurtleMoverClass(object):
 
     def scan_cb(self, msg):
         # правый, левый и луч нормали
-        self.r_ray = msg.ranges[(5, 85)[self.scan_key]]
-        self.l_ray = msg.ranges[(355, 95)[self.scan_key]]
+        self.r_ray = msg.ranges[(355, 85)[self.scan_key]]
+        self.l_ray = msg.ranges[(5, 95)[self.scan_key]]
         self.dist_to_wall = msg.ranges[(0, 90)[self.scan_key]]
         # вызываем движение
         if self.scan_key:
@@ -72,8 +72,8 @@ class TurtleMoverClass(object):
     def turner(self):
         # поворачиваемся до состония, параллельного стене
         # ещё не учёл растоние
-        if (abs(self.r_ray - self.l_ray) <= 0.0001
-                and abs(self.r_ray * math.cos(math.pi / 36) - self.dist_to_wall) <= 0.0001):
+        if (abs(self.r_ray - self.l_ray) <= 0.001
+                and abs(self.r_ray * math.cos(math.pi / 36) - self.dist_to_wall) <= 0.001):
             # стоим-ждём
             self.velocity.linear.x = 0
             self.velocity.angular.z = 0
